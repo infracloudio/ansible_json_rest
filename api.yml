@@ -1,0 +1,30 @@
+---
+- hosts: localhost 
+  tasks:
+  - name: Running API 
+    uri: 
+      url: https://api.github.com/users
+      method: GET
+      return_content: yes
+    register: user_list
+
+  - name: App Details
+    debug: var=user_list
+
+  - set_fact:
+      user_url: "{{ lookup('template', './app.yml.j2') }}"
+
+  - name: User URL
+    debug: var=user_url
+
+  - name: Using username
+    uri:
+      url: "{{ user_url }}"
+      method: GET
+      return_content: yes
+    register: user_details
+
+  - name: User Email
+    debug: var=user_details.json.email
+
+
